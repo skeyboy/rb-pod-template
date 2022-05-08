@@ -55,7 +55,7 @@ module Pod
       project_app_group.remove_from_project
 
       # Remove the product reference
-      product = @project.products.select { |product| product.path == @configurator.pod_name + "_Example.app" }.first
+      product = @project.products.select { |product| product.path == @configurator.pod_name + ".app" }.first
       product.remove_from_project
 
       # Remove the actual folder + files for both projects
@@ -82,7 +82,7 @@ RUBY
     def rename_files
       # shared schemes have project specific names
       scheme_path = project_folder + "/PROJECT.xcodeproj/xcshareddata/xcschemes/"
-      File.rename(scheme_path + "PROJECT.xcscheme", scheme_path +  @configurator.pod_name + "-Example.xcscheme")
+      File.rename(scheme_path + "PROJECT.xcscheme", scheme_path +  @configurator.pod_name + ".xcscheme")
 
       # rename xcproject
       File.rename(project_folder + "/PROJECT.xcodeproj", project_folder + "/" +  @configurator.pod_name + ".xcodeproj")
