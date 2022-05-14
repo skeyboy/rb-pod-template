@@ -13,8 +13,8 @@ FileUtils.mv "POD_README.md", "README.md"
 puts ''
 puts '------------------ Welcome && Useage------------------'
 puts ''
-puts 'if create OC Project, " pod lib create ProjectDemo ObjC --template-url="https://github.com/skeyboy/pod-template" " '.yellow
-puts 'if create Swift Project, " pod lib create ProjectDemo Swift --template-url="https://github.com/skeyboy/pod-template" " '.yellow
+puts 'if create OC Project, " pod lib create ProjectDemo ObjC --template-url="https://github.com/skeyboy/rb-pod-template" " '.yellow
+puts 'if create Swift Project, " pod lib create ProjectDemo Swift --template-url="https://github.com/skeyboy/rb-pod-template" " '.yellow
 puts ''
 
 # 获取参数
@@ -29,7 +29,7 @@ if size == 0
     puts ''
 elsif size == 1
     pod_name = ARGV[0]
-    pod_languge = "ObjC"
+    pod_languge = "Swift"
     File.rename('../' + File.basename(Dir.getwd), '../' + pod_name)
     puts "项目名称 ： #{pod_name}".green
     puts "项目语言 ： #{pod_languge} [ Default ]".green

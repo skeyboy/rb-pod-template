@@ -6,8 +6,9 @@ module Pod
 
     attr_reader :pod_name, :pods_for_podfile, :prefixes, :test_example_file, :username, :email
 
-    def initialize(pod_name)
+    def initialize(pod_name, pod_languge)
       @pod_name = pod_name
+      @pod_languge = pod_languge
       @pods_for_podfile = []
       @prefixes = []
       @message_bank = MessageBank.new(self)
@@ -18,8 +19,13 @@ module Pod
     def run
       @message_bank.welcome_message
 
-      ConfigureSwift.perform(configurator: self)
 
+      case pod_languge.downcase.to_sym
+        when :swift
+          ConfigureSwift.perform(configurator: self)
+        when :objc
+          ConfigureIOS.perform(configurator: self)
+      end
 
       replace_variables_in_files
       clean_template_files
