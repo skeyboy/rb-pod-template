@@ -34,7 +34,7 @@ TODO: Add long description of the pod here.
    # if ENV["binary"] === "1"
     s.source_files = '${POD_NAME}/Classes/**/*'
   # else
-    s.vendored_frameworks = "PodDemo.framework"
+    s.vendored_frameworks = "${POD_NAME}.framework"
     #s.prepare_command = '/bin/bash pre_build.sh'
  # end
  
