@@ -57,33 +57,37 @@ extension  String  {
         }
 }
 
-print(CommandLine.arguments)
+//print(CommandLine.arguments)
 let podFilePath = CommandLine.arguments[1]
 let podName = CommandLine.arguments[2]
 let commitId = CommandLine.arguments[3]
-let isGitSource = CommandLine.arguments[4]
+let specVersion = CommandLine.arguments[4]
+let isGitSource = CommandLine.arguments[5]
 
 
 let pod = try! String(contentsOfFile: "\(podFilePath)")
-
-print(pod)
+let gitSource = "https://gitee.com/liyulong"
+//http://localhost:8080/binary_static/PodDemo/PodDemo-0.0.8-44bf6282fc9b7eb686048371c58dc05e350c1109-framework.zip
+let zipSource = "http://localhost:8080/binary_static/\(podName)/\(podName)-\(specVersion)-\(commitId)-framework.zip"
+//print(pod)
+print("\n",zipSource,"\n")
 let pattern = "s.source.*:(git||http).*"
-let binaryHttpUrl = "https://github.com/skeyboy/\(podName)/\(commitId).zip"
+let binaryHttpUrl = "\(zipSource)"
 let binnarySourceTemplate = """
 s.source           = { :http => '\(binaryHttpUrl)' }
 """
 
 let gitSourceTemplate =  """
-s.source           = { :git => 'https://github.com/skeyboy/\(podName).git', :tag => s.version.to_s }
+s.source           = { :git => '\(gitSource)/\(podName).git', :tag => s.version.to_s }
 """
 if isGitSource == "1" {
     
-   let rev = pod.regexPattern(pattern: pattern, template:gitSourceTemplate)
+    let rev = pod.regexPattern(pattern: pattern, template:gitSourceTemplate).regexPattern(pattern: "#?.*s.source_files", template: "s.source_files").regexPattern(pattern: "#?.*s.vendored_frameworks", template: "#s.vendored_frameworks")
     //print(rev)
     try! rev.write(toFile: podFilePath, atomically: true, encoding: String.Encoding.utf8)
 } else {
     
-    let rev = pod.regexPattern(pattern: pattern, template:binnarySourceTemplate)
+    let rev = pod.regexPattern(pattern: pattern, template:binnarySourceTemplate).regexPattern(pattern: "#?.*s.source_files", template: "# s.source_files").regexPattern(pattern: "#?.*s.vendored_frameworks", template: "s.vendored_frameworks")
     try! rev.write(toFile: podFilePath, atomically: true, encoding: String.Encoding.utf8)
 }
 
