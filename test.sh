@@ -107,7 +107,7 @@ echo ${project_name}
 current_git_branch_latest_id=`git rev-parse HEAD`
 
 # 检测还原为 :git方式 即 源码
- swift build.swift $file_path $project_name $current_git_branch_latest_id $pod_spec_version_new "1"
+ #swift build.swift $file_path $project_name $current_git_branch_latest_id $pod_spec_version_new "1"
  
 git add .
 git commit -m"${pod_spec_version_new}_${current_git_branch_latest_id}"
@@ -119,37 +119,37 @@ git push --tags
 
 
 
-sh Example/buildFramework.sh "${project_name}"
+#sh Example/buildFramework.sh "${project_name}"
 #sh Example/buildXCFramework.sh "${project_name}"
 
 
-zip_filename="${project_name}-${pod_spec_version_new}-${current_git_branch_latest_id}-framework.zip"
+#zip_filename="${project_name}-${pod_spec_version_new}-${current_git_branch_latest_id}-framework.zip"
 #zip -r "${zip_filename}" "${project_name}.framework" "${project_name}.xcframework"
-zip -r "${zip_filename}" "${project_name}.framework"
+#zip -r "${zip_filename}" "${project_name}.framework"
 #zip -r "${zip_filename}" "${project_name}.xcframework"
 
 
 # 切换为 :http 下载 framework方式
-swift build.swift $file_path $project_name $current_git_branch_latest_id $pod_spec_version_new "0"
+#swift build.swift $file_path $project_name $current_git_branch_latest_id $pod_spec_version_new "0"
 
-curl -X POST http://localhost:8080/module_build \
--F "file=@${zip_filename}" \
--F "moduleName=${project_name}" \
--F "commitId=${current_git_branch_latest_id}" \
--H "Content-Type: multipart/form-data"
-
-
-rm -rf  -f -r "$(pwd)/${project_name}.framework"
-rm -rf -f -r "$(pwd)/archives"
-rm -rf "$(pwd)/${zip_filename}"
-rm -rf  -f -r "$(pwd)/${project_name}.xcframework"
+#curl -X POST http://localhost:8080/module_build \
+#-F "file=@${zip_filename}" \
+#-F "moduleName=${project_name}" \
+#-F "commitId=${current_git_branch_latest_id}" \
+#-H "Content-Type: multipart/form-data"
+#
+#
+#rm -rf  -f -r "$(pwd)/${project_name}.framework"
+#rm -rf -f -r "$(pwd)/archives"
+#rm -rf "$(pwd)/${zip_filename}"
+#rm -rf  -f -r "$(pwd)/${project_name}.xcframework"
 
 git add .
-git commit -m"binary_${pod_spec_version_new}_${current_git_branch_latest_id}"
+git commit -m"${pod_spec_version_new}_${current_git_branch_latest_id}"
 git push
-git tag "${pod_spec_version_new}-binary"
+git tag "${pod_spec_version_new}y"
 git push --tags
 
-pod repo push myrepo-binary ${pod_spec_name} --verbose --allow-warnings --sources="${binary_specs}"
+binary=0 pod repo push myrepo ${pod_spec_name} --verbose --allow-warnings --skip-import-validation --sources="${binary_specs}"
 
 #swift build.swift $file_path $project_name $current_git_branch_latest_id $pod_spec_version_new "1"
