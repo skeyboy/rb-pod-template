@@ -82,12 +82,13 @@ s.source           = { :git => '\(gitSource)/\(podName).git', :tag => s.version.
 """
 if isGitSource == "1" {
     
-    let rev = pod.regexPattern(pattern: pattern, template:gitSourceTemplate).regexPattern(pattern: "#?.*s.source_files", template: "s.source_files").regexPattern(pattern: "#?.*s.vendored_frameworks", template: "#s.vendored_frameworks")
+    let rev = pod.regexPattern(pattern: pattern, template:gitSourceTemplate).regexPattern(pattern: "#?.*s.source_files", template: "s.source_files").regexPattern(pattern: "#?.*s.vendored_frameworks", template: "#s.vendored_frameworks").regexPattern(pattern: "#?.*s.prepare_command", template: "#s.prepare_command")
     //print(rev)
     try! rev.write(toFile: podFilePath, atomically: true, encoding: String.Encoding.utf8)
 } else {
     
-    let rev = pod.regexPattern(pattern: pattern, template:binnarySourceTemplate).regexPattern(pattern: "#?.*s.source_files", template: "# s.source_files").regexPattern(pattern: "#?.*s.vendored_frameworks", template: "s.vendored_frameworks")
+//    let rev = pod.regexPattern(pattern: pattern, template:binnarySourceTemplate).regexPattern(pattern: "#?.*s.source_files", template: "# s.source_files").regexPattern(pattern: "#?.*s.vendored_frameworks", template: "s.vendored_frameworks")
+    let rev = pod.regexPattern(pattern: pattern, template:gitSourceTemplate).regexPattern(pattern: "#?.*s.source_files", template: "#s.source_files").regexPattern(pattern: "#?.*s.vendored_frameworks", template: "s.vendored_frameworks").regexPattern(pattern: "#?.*s.prepare_command", template: "s.prepare_command")
     try! rev.write(toFile: podFilePath, atomically: true, encoding: String.Encoding.utf8)
 }
 

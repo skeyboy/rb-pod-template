@@ -31,14 +31,13 @@ TODO: Add long description of the pod here.
   s.ios.deployment_target = '9.0'
   s.pod_target_xcconfig = { 'BUILD_LIBRARY_FOR_DISTRIBUTION' => true }
 
-   if ENV["binary"] === "0"
-    s.source_files = '${POD_NAME}/Classes/**/*'
-  else
-    s.vendored_frameworks = "#{s.name}/Frameworks/#{s.version}/#{s.name}.framework"
-    #s.prepare_command = '/bin/bash build_lib.sh'
- end
+
+#s.source_files = '${POD_NAME}/Classes/**/*'
+s.vendored_frameworks = "Example/Pods/Products/#{s.name}.framework"
+s.prepare_command = "/bin/bash Example/buildFramework.sh #{s.name}"
  
-  s.preserve_paths = "${POD_NAME}/Classes/**/*","#${POD_NAME}/Assets/*.{png,xib,plist}","${POD_NAME}.framework","${POD_NAME}.xcframework"
+ 
+  s.preserve_paths = "${POD_NAME}/Classes/**/*","${POD_NAME}/Assets/*.{png,xib,plist}","${POD_NAME}.framework","${POD_NAME}.xcframework","Example/Pods/Products/#{s.name}.framework","Example/Pods/Products/#{s.name}.xcframework"
   s.requires_arc = true
   s.pod_target_xcconfig = { 'ONLY_ACTIVE_ARCH' => 'YES' }
 
