@@ -1,9 +1,9 @@
 # 获取到的文件路径
-binary_specs="https://gitee.com/liyulong/Specs-Binary.git"
-source_specs="https://gitee.com/liyulong/Specs.git"
-pos repo add myrepo ${source_specs}
-pos repo add myrepo-binary ${source_specs}
-
+binary_specs="git@pkg.poizon.com:liyulong/mybinaryspecs.git"
+source_specs="git@pkg.poizon.com:liyulong/myspecs.git"
+pod repo add myrepo ${source_specs}
+pod repo add myrepo-binary ${binary_specs}
+host="http://localhost:8081"
 file_path=""
 file_name=""
 # 文件后缀名
@@ -110,49 +110,42 @@ echo ${project_name}
 current_git_branch_latest_id=`git rev-parse HEAD`
 
 # 检测还原为 :git方式 即 源码
- swift build.swift $file_path $project_name $current_git_branch_latest_id $pod_spec_version_new "1"
- 
-git add .
+swift build.swift $file_path $project_name $current_git_branch_latest_id $pod_spec_version_new "1" $host
+
+rm -rf ./.git/hooks
+git add "${project_name}/*"
 git commit -m"${pod_spec_version_new}_${current_git_branch_latest_id}"
-git push
-git tag ${pod_spec_version_new}
+git tag "${pod_spec_version_new}"
 git push --tags
+git push
 
-pod repo push myrepos ${pod_spec_name} --verbose --allow-warnings --sources="${source_specs}"
+pod repo push myrepo ${pod_spec_name} --verbose --allow-warnings --sources="${source_specs}"
 
 
 
-#sh Example/buildFramework.sh "${project_name}"
+sh Example/buildFramework.sh "${project_name}"
 #sh Example/buildXCFramework.sh "${project_name}"
-#
-#
-#zip_filename="${project_name}-${pod_spec_version_new}-${current_git_branch_latest_id}-framework.zip"
-##zip -r "${zip_filename}" "${project_name}.framework" "${project_name}.xcframework"
-##zip -r "${zip_filename}" "${project_name}.framework"
-#zip -r "${zip_filename}" "${project_name}.xcframework"
-#
-
 # 切换为 :http 下载 framework方式
-swift build.swift $file_path $project_name $current_git_branch_latest_id $pod_spec_version_new "0"
-#
-#curl -X POST http://localhost:8080/module_build \
-#-F "file=@${zip_filename}" \
-#-F "moduleName=${project_name}" \
-#-F "commitId=${current_git_branch_latest_id}" \
-#-H "Content-Type: multipart/form-data"
+swift build.swift $file_path $project_name $current_git_branch_latest_id $pod_spec_version_new "0" $host
+zip_file_path="${project_name}"
+mkdir -p "binary/${project_name}"
+mv "${project_name}.framework" "${zip_file_path}"
+cp "${project_name}.podspec" "Example"  "${zip_file_path}"
+zip_filename="${project_name}.zip"
+zip -r "${project_name}.zip" "${project_name}.framework" "${project_name}.podspec" "${project_name}/**/*"
+curl -X POST "${host}/module_build" \
+-F "file=@${zip_filename}" \
+-F "moduleName=${project_name}" \
+-F "commitId=${current_git_branch_latest_id}" \
+-F "version=${pod_spec_version_new}" \
+-H "Content-Type: multipart/form-data"
 
 
-#rm -rf  -f -r "$(pwd)/${project_name}.framework"
-#rm -rf -f -r "$(pwd)/archives"
-#rm -rf "$(pwd)/${zip_filename}"
-#rm -rf  -f -r "$(pwd)/${project_name}.xcframework"
+rm -rf  -f -r "$(pwd)/${project_name}.framework"
+rm -rf -f -r "$(pwd)/archives"
+rm -rf "$(pwd)/${zip_filename}"
+rm -rf  -f -r "$(pwd)/${project_name}.xcframework"
+rm -rf  -f -r "$(pwd)/${project_name}.framework"
 
-git add .
-git commit -m"binary_${pod_spec_version_new}_${current_git_branch_latest_id}"
-git push
-git tag "${pod_spec_version_new}-binary"
-git push --tags
-
-pod repo push myrepo-binary ${pod_spec_name} --verbose --allow-warnings  --skip-import-validation --sources="${binary_specs}"
-
-#swift build.swift $file_path $project_name $current_git_branch_latest_id $pod_spec_version_new "1"
+pod repo push myrepo-binary ${pod_spec_name} --verbose --allow-warnings  --skip-import-validation
+swift build.swift $file_path $project_name $current_git_branch_latest_id $pod_spec_version_new "1" $host

@@ -26,20 +26,13 @@ TODO: Add long description of the pod here.
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { '${USER_NAME}' => '${USER_EMAIL}' }
   s.source           = { :git => 'https://github.com/skeyboy/${POD_NAME}.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
-
   s.ios.deployment_target = '9.0'
-  s.pod_target_xcconfig = { 'BUILD_LIBRARY_FOR_DISTRIBUTION' => true }
+  s.pod_target_xcconfig = {'ONLY_ACTIVE_ARCH' => 'YES', 'BUILD_LIBRARY_FOR_DISTRIBUTION' => true,'VALID_ARCHS' => 'x86_64 armv7 arm64',"EXCLUDED_ARCHS[sdk=iphonesimulator*]"=>"arm64" }
+  s.module_name    = "${POD_NAME}"
 
 
-#s.source_files = '${POD_NAME}/Classes/**/*'
-s.vendored_frameworks = "Example/Pods/Products/#{s.name}.framework"
-s.prepare_command = "/bin/bash Example/buildFramework.sh #{s.name}"
- 
- 
-  s.preserve_paths = "${POD_NAME}/Classes/**/*","${POD_NAME}/Assets/*.{png,xib,plist}","${POD_NAME}.framework","${POD_NAME}.xcframework","Example/Pods/Products/#{s.name}.framework","Example/Pods/Products/#{s.name}.xcframework"
-  s.requires_arc = true
-  s.pod_target_xcconfig = { 'ONLY_ACTIVE_ARCH' => 'YES' }
+s.source_files = '${POD_NAME}/Classes/**/*'
+#s.vendored_frameworks = "{POD_NAME}.framework"
 
   # s.resource_bundles = {
   #   '${POD_NAME}' => ['${POD_NAME}/Assets/*.png']

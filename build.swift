@@ -63,18 +63,19 @@ let podName = CommandLine.arguments[2]
 let commitId = CommandLine.arguments[3]
 let specVersion = CommandLine.arguments[4]
 let isGitSource = CommandLine.arguments[5]
+let host = CommandLine.arguments[6]
 
 
 let pod = try! String(contentsOfFile: "\(podFilePath)")
-let gitSource = "https://gitee.com/liyulong"
+let gitSource = "git@pkg.poizon.com:liyulong"
 //http://localhost:8080/binary_static/PodDemo/PodDemo-0.0.8-44bf6282fc9b7eb686048371c58dc05e350c1109-framework.zip
-let zipSource = "http://localhost:8080/binary_static/\(podName)/\(podName)-\(specVersion)-\(commitId)-framework.zip"
+let zipSource = "\(host)/binary_static/\(podName)/\(specVersion)/\(commitId)/\(podName).zip"
 //print(pod)
 print("\n",zipSource,"\n")
 let pattern = "s.source.*:(git||http).*"
 let binaryHttpUrl = "\(zipSource)"
 let binnarySourceTemplate = """
-s.source           = { :http => '\(binaryHttpUrl)' }
+s.source           = { :http => '\(binaryHttpUrl)', :type=>'zip' }
 """
 
 let gitSourceTemplate =  """
@@ -82,13 +83,15 @@ s.source           = { :git => '\(gitSource)/\(podName).git', :tag => s.version.
 """
 if isGitSource == "1" {
     
-    let rev = pod.regexPattern(pattern: pattern, template:gitSourceTemplate).regexPattern(pattern: "#?.*s.source_files", template: "s.source_files").regexPattern(pattern: "#?.*s.vendored_frameworks", template: "#s.vendored_frameworks").regexPattern(pattern: "#?.*s.prepare_command", template: "#s.prepare_command")
+    let rev = pod.regexPattern(pattern: pattern, template:gitSourceTemplate).regexPattern(pattern: "#?.*s.source_files", template: "s.source_files").regexPattern(pattern: "#?.*s.vendored_frameworks", template: "#s.vendored_frameworks")
+        
+//        .regexPattern(pattern: "#?.*s.prepare_command", template: "#s.prepare_command")
     //print(rev)
     try! rev.write(toFile: podFilePath, atomically: true, encoding: String.Encoding.utf8)
 } else {
     
-//    let rev = pod.regexPattern(pattern: pattern, template:binnarySourceTemplate).regexPattern(pattern: "#?.*s.source_files", template: "# s.source_files").regexPattern(pattern: "#?.*s.vendored_frameworks", template: "s.vendored_frameworks")
-    let rev = pod.regexPattern(pattern: pattern, template:gitSourceTemplate).regexPattern(pattern: "#?.*s.source_files", template: "#s.source_files").regexPattern(pattern: "#?.*s.vendored_frameworks", template: "s.vendored_frameworks").regexPattern(pattern: "#?.*s.prepare_command", template: "s.prepare_command")
+    let rev = pod.regexPattern(pattern: pattern, template:binnarySourceTemplate).regexPattern(pattern: "#?.*s.source_files", template: "# s.source_files").regexPattern(pattern: "#?.*s.vendored_frameworks", template: "s.vendored_frameworks")
+//    let rev = pod.regexPattern(pattern: pattern, template:gitSourceTemplate).regexPattern(pattern: "#?.*s.source_files", template: "#s.source_files").regexPattern(pattern: "#?.*s.vendored_frameworks", template: "s.vendored_frameworks").regexPattern(pattern: "#?.*s.prepare_command", template: "s.prepare_command")
     try! rev.write(toFile: podFilePath, atomically: true, encoding: String.Encoding.utf8)
 }
 
