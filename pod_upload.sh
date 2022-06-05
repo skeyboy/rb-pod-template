@@ -1,9 +1,9 @@
 # 获取到的文件路径
-binary_specs="git@pkg.poizon.com:liyulong/mybinaryspecs.git"
-source_specs="git@pkg.poizon.com:liyulong/myspecs.git"
+binary_specs="https://gitee.com/liyulong/Specs-Binary.git"
+source_specs="https://gitee.com/liyulong/Specs.git"
 pod repo add myrepo ${source_specs}
 pod repo add myrepo-binary ${binary_specs}
-host="http://localhost:8081"
+host="http://localhost:8082"
 file_path=""
 file_name=""
 # 文件后缀名

@@ -67,7 +67,7 @@ let host = CommandLine.arguments[6]
 
 
 let pod = try! String(contentsOfFile: "\(podFilePath)")
-let gitSource = "git@pkg.poizon.com:liyulong"
+let gitSource = "https://gitee.com/liyulong/\(podName).git"
 //http://localhost:8080/binary_static/PodDemo/PodDemo-0.0.8-44bf6282fc9b7eb686048371c58dc05e350c1109-framework.zip
 let zipSource = "\(host)/binary_static/\(podName)/\(specVersion)/\(commitId)/\(podName).zip"
 //print(pod)

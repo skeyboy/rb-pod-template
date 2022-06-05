@@ -25,14 +25,14 @@ TODO: Add long description of the pod here.
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { '${USER_NAME}' => '${USER_EMAIL}' }
-  s.source           = { :git => 'https://github.com/skeyboy/${POD_NAME}.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://gitee.com/liyulong/${POD_NAME}.git', :tag => s.version.to_s }
   s.ios.deployment_target = '9.0'
   s.pod_target_xcconfig = {'ONLY_ACTIVE_ARCH' => 'YES', 'BUILD_LIBRARY_FOR_DISTRIBUTION' => true,'VALID_ARCHS' => 'x86_64 armv7 arm64',"EXCLUDED_ARCHS[sdk=iphonesimulator*]"=>"arm64" }
   s.module_name    = "${POD_NAME}"
 
 
 s.source_files = '${POD_NAME}/Classes/**/*'
-#s.vendored_frameworks = "{POD_NAME}.framework"
+#s.vendored_frameworks = "${POD_NAME}.framework"
 
   # s.resource_bundles = {
   #   '${POD_NAME}' => ['${POD_NAME}/Assets/*.png']
